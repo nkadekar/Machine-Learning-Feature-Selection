@@ -1,6 +1,7 @@
 #include "Node.h"
 #include "Feature.h"
 #include <algorithm>
+#include <iostream>
 
 #ifndef SEARCH_H
 #define SEARCH_H
@@ -13,31 +14,100 @@ class Search {
             this -> start = nullptr;
         }
         void forwardSelection(vector<Feature*> allFeatures){
-            this->start = new Node();
-            Node* curr = nullptr;
-            for (int i = 0; i < allFeatures.size(); i++) {
-                start->addChild(new Node(allFeatures.at(i)));
-            }
+            this -> start = new Node();
+            Node* curr = start;
 
-            int bestResultIndex = 0;
-            double bestResult = 0.0;
-            for (int i = 0; i < start->children.size(); i++){
-                if (start->children.at(i)->evaluator() > bestResult) {
-                    bestResultIndex = i;
+            cout << "Using no features and \"random\" evaluation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
+
+            while(!allFeatures.empty()) {
+
+                for (int i = 0; i < allFeatures.size(); i++) {
+                    Node* temp = new Node(curr -> features);
+                    temp -> addFeature(allFeatures.at(i));
+                    curr->addChild(temp);
                 }
-                bestResult = max(bestResult, start->children.at(i)->evaluator());
-            }
-            if (start->evaluator() > bestResult){
+
+                int bestResultIndex = 0;
+                double bestResult = 0.0;
+                for (int i = 0; i < curr->children.size(); i++){
+                    double evalValue = curr->children.at(i) -> accuracy;
+                    cout << "Using feature(s)" << curr->children.at(i)->printFeatures() << " = " << evalValue << '%' << endl;
+                    if (evalValue > bestResult) {
+                        bestResultIndex = i;
+                    }
+                    bestResult = max(bestResult, evalValue);
+                }
+
+                if (curr->accuracy > bestResult){
+                    
+                    cout << endl << "(Warning, Accuracy has decreased!)" << endl
+                         << "Finished Search, best feature subset is " << curr -> printFeatures() << ", which has an accuracy of " << curr -> accuracy << '%' << endl;
+                    
+                    return;
+                }
                 
-                //do something
-                
-                return;
+                cout << endl << "Feature set " << curr->children.at(bestResultIndex)->printFeatures() << " was best, accuracy is " << curr->children.at(bestResultIndex)->accuracy << '%' << endl << endl;
+
+                allFeatures.erase(allFeatures.begin() + bestResultIndex);
+
+                curr = curr -> children.at(bestResultIndex);
             }
 
+            cout << "Finished Search, best feature subset is " << curr -> printFeatures() << ", which has an accuracy of " << curr -> accuracy << '%' << endl;
+
+            return;
             
         }
         void backwardElimination(vector<Feature*> allFeatures){
+            this -> start = new Node(allFeatures);
+            Node* curr = start;
 
+            cout << "Using all features and \"random\" evaluation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
+
+            while(!curr->features.empty()) {
+
+                for (int i = 0; i < curr->features.size(); i++) {
+                    curr->addChild(removeNodeFeature(curr, i));
+                }
+
+                int bestResultIndex = 0;
+                double bestResult = 0.0;
+                for (int i = 0; i < curr->children.size(); i++){
+                    if (!(curr->features.size() == 1)) {
+                        double evalValue = curr->children.at(i) -> accuracy;
+                        cout << "Using feature(s)" << curr->children.at(i)->printFeatures() << " = " << evalValue << '%' << endl;
+                        if (evalValue > bestResult) {
+                            bestResultIndex = i;
+                        }
+                        bestResult = max(bestResult, evalValue);
+                    }
+                }
+
+                if (curr->accuracy > bestResult){
+                    
+
+                    cout << endl << "(Warning, Accuracy has decreased!)" << endl
+                         << "Finished Search, best feature subset is " << curr -> printFeatures() << ", which has an accuracy of " << curr -> accuracy << '%' << endl;
+                    
+                    return;
+                }
+                
+                cout << endl << "Feature set " << curr->children.at(bestResultIndex)->printFeatures() << " was best, accuracy is " << curr->children.at(bestResultIndex)->accuracy << '%' << endl << endl;
+
+                allFeatures.erase(allFeatures.begin() + bestResultIndex);
+
+                curr = curr -> children.at(bestResultIndex);
+            }
+
+            cout << "Finished Search, best feature subset is " << curr -> printFeatures() << ", which has an accuracy of " << curr -> accuracy << '%' << endl;
+
+            return;
+        }
+
+        Node* removeNodeFeature(Node* node, int index) {
+            Node* temp = new Node(node->features);
+            temp->features.erase(temp->features.begin() + index);
+            return temp;
         }
 };
 

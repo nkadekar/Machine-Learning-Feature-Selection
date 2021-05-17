@@ -1,10 +1,10 @@
-#ifndef FEATURE.H
-#define FEATURE.H
+#ifndef FEATURE_H
+#define FEATURE_H
 
 using namespace std;
 
 class Feature {
-    private:
+    public:
         int data;
 
     public: 
