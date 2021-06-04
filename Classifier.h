@@ -35,6 +35,7 @@ class Classifier {
                     minDistanceLabel = train_labels.at(i);
                 }
             }
+            cout << "Nearest Neighbor: Min. Distance found of " << minDistance << " with class " << minDistanceLabel << endl;
             return minDistanceLabel;
         }
 

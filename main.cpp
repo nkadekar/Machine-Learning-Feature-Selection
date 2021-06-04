@@ -44,7 +44,7 @@ inline void normalizeData(string inputFile, vector<vector<double>>& train_instan
     stringstream inSS;
     string inputLine;
 
-    while(getline(inFS, inputLine)){                
+    while(getline(inFS, inputLine)){
         inSS << inputLine;
         // cout << inputLine << endl;
         string IEEE;
@@ -58,58 +58,36 @@ inline void normalizeData(string inputFile, vector<vector<double>>& train_instan
         temp.clear();
         inSS.clear();
     }
-    /////////////////////////////////////////////////////////////////////
-    // vector<double> mean(train_instances.at(0).size(), 0.0);
-    // vector<double> standardDeviation(train_instances.at(0).size(), 0.0);
+    ///////////////////////////////////////////////////////////////////
+    vector<double> mean(train_instances.at(0).size(), 0.0);
+    vector<double> standardDeviation(train_instances.at(0).size(), 0.0);
 
-    // //Mean
-    // for (int i = 0; i < train_instances.size(); i++){
-    //     for (int j = 0; j < train_instances.at(i).size(); j++) {
-    //         mean.at(j) += train_instances.at(i).at(j);
-    //     }
-    // }
-    // for (int i = 0; i < mean.size(); i++){
-    //     mean.at(i) = mean.at(i) / train_instances.size();
-    // }
+    //Mean
+    for (int i = 0; i < train_instances.size(); i++){
+        for (int j = 0; j < train_instances.at(i).size(); j++) {
+            mean.at(j) += train_instances.at(i).at(j);
+        }
+    }
+    for (int i = 0; i < mean.size(); i++){
+        mean.at(i) = mean.at(i) / train_instances.size();
+    }
 
-    // cout << "Mean" << endl;
-    // for (int i = 0; i < mean.size(); i++){
-    //     cout << mean.at(i) << " ";
-    // }
-    // cout << endl;
+    //StandardDeviation
+    for (int i = 0; i < train_instances.size(); i++){
+        for (int j = 0; j < train_instances.at(i).size(); j++) {
+            standardDeviation.at(j) += pow((train_instances.at(i).at(j) - mean.at(j)), 2);
+        }
+    }
+    for (int i = 0; i < standardDeviation.size(); i++) {
+        standardDeviation.at(i) = sqrt(standardDeviation.at(i) / train_instances.size());
+    }
 
-    // //StandardDeviation
-    // for (int i = 0; i < train_instances.size(); i++){
-    //     for (int j = 0; j < train_instances.at(i).size(); j++) {
-    //         standardDeviation.at(j) += pow((train_instances.at(i).at(j) - mean.at(j)), 2);
-    //     }
-    // }
-    // for (int i = 0; i < standardDeviation.size(); i++) {
-    //     standardDeviation.at(i) = sqrt(standardDeviation.at(i) / train_instances.size());
-    // }
-
-    // cout << "Standard Deviation" << endl;
-    // for (int i = 0; i < mean.size(); i++){
-    //     cout << standardDeviation.at(i) << " ";
-    // }
-    // cout << endl;
-
-    // //zscaling
-    // for (int i = 0; i < train_instances.size(); i++){
-    //     for (int j = 0; j < train_instances.at(i).size(); j++) {
-    //         train_instances.at(i).at(j) = (train_instances.at(i).at(j) - mean.at(j)) / standardDeviation.at(j);
-    //     }
-    // }
-
-    // cout << "Train Instances" << endl;
-    // for (int i = 0; i < train_instances.size(); i++){
-    //     for (int j = 0; j < train_instances.at(i).size(); j++) {
-    //         cout << train_instances.at(i).at(j) << " ";
-    //     }
-    //     cout << endl;
-    // }
-    // cout << endl;
-
+    //zscaling
+    for (int i = 0; i < train_instances.size(); i++){
+        for (int j = 0; j < train_instances.at(i).size(); j++) {
+            train_instances.at(i).at(j) = (train_instances.at(i).at(j) - mean.at(j)) / standardDeviation.at(j);
+        }
+    }
 }
 
 int main(){
