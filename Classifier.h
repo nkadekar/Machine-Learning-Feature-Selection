@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include "Node.h"
 #include <sstream>
 #include <cmath>
 #include <bits/stdc++.h>
@@ -35,7 +34,7 @@ class Classifier {
                     minDistanceLabel = train_labels.at(i);
                 }
             }
-            cout << "Nearest Neighbor: Min. Distance found of " << minDistance << " with class " << minDistanceLabel << endl;
+            // cout << "Nearest Neighbor: Min. Distance found of " << minDistance << " with class " << minDistanceLabel << endl;
             return minDistanceLabel;
         }
 

@@ -1,8 +1,6 @@
 #include "Search.h"
 #include "Classifier.h"
 #include "Validator.h"
-#include "Feature.h"
-#include "Node.h"
 #include <iostream>
 #include <time.h>
 #include <cstdlib>
@@ -60,12 +58,7 @@ inline void normalizeData(string inputFile, vector<vector<double>>& train_instan
         temp.clear();
         inSS.clear();
     }
-    
     ///////////////////////////////////////////////////////////////////
-    cout << "This dataset has " << train_instances.at(0).size() << " features (not including the class attribute), with " << train_labels.size() << " instances." << endl;
-
-    cout << "Please wait while I normalize the data...   ";
-
     vector<double> mean(train_instances.at(0).size(), 0.0);
     vector<double> standardDeviation(train_instances.at(0).size(), 0.0);
 
@@ -95,48 +88,63 @@ inline void normalizeData(string inputFile, vector<vector<double>>& train_instan
             train_instances.at(i).at(j) = (train_instances.at(i).at(j) - mean.at(j)) / standardDeviation.at(j);
         }
     }
-    cout << "Done!" << endl;
 }
 
 int main(){
+    vector<vector<double>> train_instances;
+    vector<double> train_labels;
+    string inputFile;
+    int input;
 
     srand(time(NULL));
 
-    int input;
-
-    cout << "Welcome to Jorge and Nikhil's Feature Selection Algorithm." << endl;
-
-    cout << "Type the number of the algorithm you want to run" << endl << "1. Forward Selection" << endl << "2. Backward Elimination" << endl;
+    cout << "Welcome to Jorge and Nikhil's nearest neighbor - leave one out validation program." << endl;
+    cout << "Which file would you like to to test : " << endl << "1. Small Dataset (10 features)" << endl << "2. Large Dataset (40 features)" << endl;
 
     cin >> input;
 
-    vector<vector<double>> train_instances;
-    vector<double> train_labels;
-    string inputFile = "large_dataset_part3.txt";
-
-    normalizeData(inputFile, train_instances, train_labels);
-
-    Validator* validator = new Validator(train_instances, train_labels);
-
-    Search* search = new Search(validator);
-    vector<Feature*> allFeatures;
-
-    for(int i = 0; i < train_instances.at(0).size(); i++) {
-        Feature* temp = new Feature(i + 1);
-        allFeatures.push_back(temp);
+    if (input == 1) {
+        inputFile = "small_dataset.txt";
     }
-
-    if (input == 1){
-        search->forwardSelection(allFeatures);
+    else if (input == 2) {
+        inputFile = "large_dataset.txt";
     }
-
-    else if (input == 2){
-        search->backwardElimination(allFeatures);
-    }
-
     else {
         cout << "Something went wrong." << endl;
         exit(1);
+    }
+
+    cout << "Please wait while I normalize the data...   ";
+    auto start = high_resolution_clock::now();
+
+    normalizeData(inputFile, train_instances, train_labels);
+
+    auto end = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(end - start);
+    cout << "Done! Time taken: " << duration.count() << " microseconds" << endl;
+
+    vector<int> threefiveseven = {3, 5, 7};
+    vector<int> onefifteentwentyseven = {1, 15, 27};
+
+    Validator* validator = new Validator(train_instances, train_labels);
+
+    double result;
+
+    if (input == 1) {
+        auto start = high_resolution_clock::now();
+        cout << "Using features subset {3, 5, 7}" << endl;
+        result = validator -> leave_one_out_validation(threefiveseven);
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(end - start);
+        cout << "Accuracy = " << result << ". Time taken: " << duration.count() << " microseconds" << endl;
+    }
+    else if (input == 2) {
+        auto start = high_resolution_clock::now();
+        cout << "Using features subset {1, 15, 27}" << endl;
+        result = validator -> leave_one_out_validation(onefifteentwentyseven);
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(end - start);
+        cout << "Accuracy = " << result << ". Time taken: " << duration.count() << " microseconds" << endl;
     }
 
     return 0;

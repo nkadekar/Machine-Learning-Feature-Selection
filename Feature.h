@@ -5,10 +5,10 @@ using namespace std;
 
 class Feature {
     public:
-        double data;
+        int data;
 
     public: 
-        Feature(double data) {
+        Feature(int data) {
             this -> data = data;
         }
 };

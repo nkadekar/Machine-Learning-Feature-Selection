@@ -1,4 +1,5 @@
 #include "Feature.h"
+#include "Validator.h"
 #include <cstdlib>
 #include <vector>
 #include <time.h>
@@ -15,22 +16,32 @@ class Node {
         vector<Node*> children;
         vector<Feature*> features;
         double accuracy;
+        Validator* validator;
 
     public:
-        Node() {
-            accuracy = evaluator();
+        Node(Validator* validator) {
+            this->validator = validator;
+            // accuracy = evaluator();
         }
 
-        Node(vector<Feature*> features){
+        Node(vector<Feature*> features, Validator* validator){
             for (int i = 0; i < features.size(); i++){
                 this->features.push_back(features.at(i));
             }
-            accuracy = evaluator();
+            this->validator = validator;
+            // accuracy = evaluator();
         }
 
-        double evaluator(){
-            double random = rand() % 1000 / 10.0;
-            return random;
+        void evaluator(){
+            vector<int> subset;
+            double result = 0;
+            for (int i = 0; i < features.size(); i++) {
+                int data = features.at(i)->data;
+                subset.push_back(data);
+            }
+            result = this -> validator -> leave_one_out_validation(subset);
+
+            this->accuracy = result * 100;
         }
         
         void addChild(Node* child){

@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "Feature.h"
+#include "Validator.h"
 #include <algorithm>
 #include <iostream>
 
@@ -9,12 +10,16 @@
 class Search {
     private:
         Node* start;
+        Validator* validator;
+
     public:
-        Search() {
+        Search(Validator* validator) {
             this -> start = nullptr;
+            this->validator = validator;
         }
         void forwardSelection(vector<Feature*> allFeatures){
-            this -> start = new Node();
+            this -> start = new Node(this->validator);
+            start -> evaluator();
             Node* curr = start;
 
             cout << "Using no features and \"random\" evaluation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
@@ -22,8 +27,9 @@ class Search {
             while(!allFeatures.empty()) {
 
                 for (int i = 0; i < allFeatures.size(); i++) {
-                    Node* temp = new Node(curr -> features);
+                    Node* temp = new Node(curr -> features, this->validator);
                     temp -> addFeature(allFeatures.at(i));
+                    temp -> evaluator();
                     curr->addChild(temp);
                 }
 
@@ -59,7 +65,8 @@ class Search {
             
         }
         void backwardElimination(vector<Feature*> allFeatures){
-            this -> start = new Node(allFeatures);
+            this -> start = new Node(allFeatures, this->validator);
+            start -> evaluator();
             Node* curr = start;
 
             cout << "Using all features and \"random\" evaluation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
@@ -105,8 +112,9 @@ class Search {
         }
 
         Node* removeNodeFeature(Node* node, int index) {
-            Node* temp = new Node(node->features);
+            Node* temp = new Node(node->features, this->validator);
             temp->features.erase(temp->features.begin() + index);
+            temp -> evaluator();
             return temp;
         }
 };

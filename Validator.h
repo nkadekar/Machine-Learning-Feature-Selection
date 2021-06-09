@@ -57,11 +57,11 @@ class Validator {
                 double classification = classifier -> test(test_instance);
                 
                 if (classification == test_label) {
-                    cout << "Iteration " << i << ": Correct class is  " << test_label << " which is correct... increasing correct count." << endl;
+                    // cout << "Iteration " << i << ": Correct class is  " << test_label << " which is correct... increasing correct count." << endl;
                     correct_predictions_count++;
                 }
                 else {
-                    cout << "Iteration " << i << ": Nearest neighbor is class " << test_label << " which is not correct... leaving correct count the same." << endl;
+                    // cout << "Iteration " << i << ": Nearest neighbor is class " << test_label << " which is not correct... leaving correct count the same." << endl;
                 }
             }
 
