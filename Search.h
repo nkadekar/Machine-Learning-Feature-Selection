@@ -22,7 +22,7 @@ class Search {
             start -> evaluator();
             Node* curr = start;
 
-            cout << "Using no features and \"random\" evaluation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
+            cout << "Using no features and leave-one-out validation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
 
             while(!allFeatures.empty()) {
 
@@ -69,7 +69,7 @@ class Search {
             start -> evaluator();
             Node* curr = start;
 
-            cout << "Using all features and \"random\" evaluation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
+            cout << "Using all features and leave-one-out validation, I get an accuracy of " << start->accuracy << '%' << endl << endl;
 
             while(!curr->features.empty()) {
 
