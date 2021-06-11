@@ -103,8 +103,13 @@ int main(){
     srand(time(NULL));
 
     int input;
+    string inputFile;  //small_dataset_part3.txt
 
     cout << "Welcome to Jorge and Nikhil's Feature Selection Algorithm." << endl;
+
+    cout << "Type in the name of the file to test: ";
+
+    cin >> inputFile;
 
     cout << "Type the number of the algorithm you want to run" << endl << "1. Forward Selection" << endl << "2. Backward Elimination" << endl;
 
@@ -112,7 +117,6 @@ int main(){
 
     vector<vector<double>> train_instances;
     vector<double> train_labels;
-    string inputFile = "large_dataset_part3.txt";
 
     normalizeData(inputFile, train_instances, train_labels);
 
